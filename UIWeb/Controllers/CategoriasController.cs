@@ -1,0 +1,162 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Dominio.Models;
+using Microsoft.AspNetCore.Authorization;
+using Repositorio.Context;
+
+namespace UIWeb.Controllers
+{
+    public class CategoriasController : Controller
+    {
+        private readonly DatabaseContext _context;
+
+        public CategoriasController(DatabaseContext context)
+        {
+            _context = context;
+        }
+
+        // GET: Categorias
+        [Authorize]
+        public async Task<ActionResult> Index()
+        {
+            return View(await _context.Categorias.ToListAsync());
+        }
+
+        [Authorize]
+        // GET: Categorias/Details/5
+        public async Task<ActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var categorias = await _context.Categorias
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (categorias == null)
+            {
+                return NotFound();
+            }
+
+            return View(categorias);
+        }
+
+        [Authorize]
+        // GET: Categorias/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [Authorize]
+        // POST: Categorias/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create([Bind("Id,Descricao")] Categorias categorias)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(categorias);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(categorias);
+        }
+
+        [Authorize]
+        // GET: Categorias/Edit/5
+        public async Task<ActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var categorias = await _context.Categorias.FindAsync(id);
+            if (categorias == null)
+            {
+                return NotFound();
+            }
+            return View(categorias);
+        }
+
+        [Authorize]
+        // POST: Categorias/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int id, [Bind("Id,Descricao")] Categorias categorias)
+        {
+            if (id != categorias.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(categorias);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CategoriasExists(categorias.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(categorias);
+        }
+
+        [Authorize]
+        // GET: Categorias/Delete/5
+        public async Task<ActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var categorias = await _context.Categorias
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (categorias == null)
+            {
+                return NotFound();
+            }
+
+            return View(categorias);
+        }
+
+        [Authorize]
+        // POST: Categorias/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(int id)
+        {
+            var categorias = await _context.Categorias.FindAsync(id);
+            _context.Categorias.Remove(categorias);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool CategoriasExists(int id)
+        {
+            return _context.Categorias.Any(e => e.Id == id);
+        }
+    }
+}

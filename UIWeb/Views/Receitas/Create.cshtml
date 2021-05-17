@@ -1,0 +1,51 @@
+﻿@using Dominio.Models
+
+@model Dominio.Models.Receitas
+
+@{
+	ViewData["Title"] = "Create";
+}
+
+
+<h4>Receitas</h4>
+<hr />
+<div class="row">
+	<div class="col-md-12">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Titulo" class="control-label"></label>
+				<input asp-for="Titulo" class="form-control" />
+				<span asp-validation-for="Titulo" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Descricao" class="control-label"></label>
+				<textarea asp-for="Descricao" class="ckeditor form-control"></textarea>
+				<span asp-validation-for="Descricao" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label"></label>
+				<select asp-items="@ViewBag.Categoria" class="form-control" onchange="$('input[name=CategoriaId]').val(this.value)">
+					<option>Selecione...</option>
+				</select>
+				<span asp-validation-for="CategoriaId" class="text-danger"></span>
+				@Html.HiddenFor(m => m.CategoriaId)
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		await Html.RenderPartialAsync("_CkeditorScriptsPartial");
+	}
+}

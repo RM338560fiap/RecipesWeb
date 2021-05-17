@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Dominio.Models.Receitas>
+
+@{
+	ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+	<h1 class="display-4">Bem vindo</h1>
+</div>
+
+<div class="col-md-12">
+	
+	@if (ViewBag.Message != null)
+	{
+		<div class="alert alert-info">@ViewBag.Message</div>
+	}
+
+	<div class="accordion" id="accordionHome">
+		@foreach (var item in Model)
+		{
+			<div class="card">
+				<div class="card-header" id="heading_@item.Id">
+					<h2 class="mb-0">
+						<button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse_@item.Id" aria-expanded="false" aria-controls="collapse_@item.Id">
+							@item.Titulo
+						</button>
+					</h2>
+				</div>
+
+				<div id="collapse_@item.Id" class="collapse" aria-labelledby="heading_@item.Id" data-parent="#accordionHome">
+					<div class="card-body">
+						@Html.Raw(item.Descricao)
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>
